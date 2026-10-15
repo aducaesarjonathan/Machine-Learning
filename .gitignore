@@ -1,0 +1,7 @@
+Microsoft VS Code/
+**/__pycache__/
+**/.venv/
+**/venv/
+.env
+Python codes/VS codes/Pihising project/phishing_email.csv
+Python codes/VS codes/Pihising project/CEAS_08.csv
