@@ -220,4 +220,4 @@ The use of COCOBOD-related data does not imply official endorsement of the analy
 
 BSc Mathematics, Kwame Nkrumah University of Science and Technology (KNUST)
 
-Research interests: Time-series analysis, mathematical modelling, optimization, and machine learning applications in commodity markets.
+Research interests: Machine learning, deep learning, representation learning, optimization, and natural language processing (NLP).
