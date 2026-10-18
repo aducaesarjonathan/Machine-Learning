@@ -10,9 +10,8 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-# =========================
-# 1. CLEAN TEXT FUNCTION
-# =========================
+
+# CLEAN TEXT FUNCTION
 def clean_text(text):
     if pd.isna(text):
         return ""
@@ -27,9 +26,7 @@ def clean_text(text):
     return text
 
 
-# =========================
-# 2. LOAD DATASETS
-# =========================
+# LOAD DATASETS
 files = {
     "CEAS_08.csv": 1,
     "Ling.csv": 1,
@@ -43,9 +40,8 @@ files = {
 dataframes = []
 
 
-# =========================
-# 3. PROCESS EACH FILE
-# =========================
+
+# PROCESS EACH FILE
 for file, label in files.items():
     try:
         df = pd.read_csv(file, encoding="latin-1")
@@ -76,9 +72,7 @@ for file, label in files.items():
         print(f"Error loading {file}: {e}")
 
 
-# =========================
-# 4. MERGE DATASETS
-# =========================
+# MERGE DATASETS
 data = pd.concat(dataframes, ignore_index=True)
 
 data = data.dropna()
@@ -87,9 +81,7 @@ data = data[data["text"].str.len() > 10]
 print("\nFinal dataset size:", data.shape)
 
 
-# =========================
-# 5. SPLIT DATA
-# =========================
+# SPLIT DATA
 
 X = data["text"]
 y = data["label"]
@@ -102,9 +94,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 
-# =========================
-# 6. TEXT → NUMBERS
-# =========================
+# TEXT to NUMBERS
 vectorizer = TfidfVectorizer(
     max_features=5000,
     stop_words="english"
@@ -114,9 +104,7 @@ X_train_vec = vectorizer.fit_transform(X_train)
 X_test_vec = vectorizer.transform(X_test)
 
 
-# =========================
-# 7. RANDOM FOREST MODEL
-# =========================
+# RANDOM FOREST MODEL
 model = RandomForestClassifier(
     n_estimators=200,
     random_state=42,
@@ -126,20 +114,17 @@ model = RandomForestClassifier(
 model.fit(X_train_vec, y_train)
 
 
-# =========================
-# 8. EVALUATION
-# =========================
+# EVALUATION
 y_pred = model.predict(X_test_vec)
 
-print("\n================ RESULTS ================")
+print("\n RESULTS ")
 print("Accuracy:", accuracy_score(y_test, y_pred))
 print("\nClassification Report:\n")
 print(classification_report(y_test, y_pred))
 
 
-# =========================
-# 9. TEST YOUR OWN EMAIL
-# =========================
+
+# TEST YOUR OWN EMAIL
 def predict_email(email_text):
     cleaned = clean_text(email_text)
     vector = vectorizer.transform([cleaned])
