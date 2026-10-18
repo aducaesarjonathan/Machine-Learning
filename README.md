@@ -1,45 +1,50 @@
 # Machine Learning Projects
 
-Welcome to my machine learning portfolio. This repository contains projects in machine learning, deep learning, natural language processing, and data analysis.
+Welcome to my machine learning portfolio. This repository showcases my practical work in machine learning, deep learning, and data analysis.
 
-I am a Mathematics graduate from Kwame Nkrumah University of Science and Technology (KNUST), Ghana, interested in artificial intelligence, machine learning, optimization, and computer vision.
+I hold a BSc in Mathematics from Kwame Nkrumah University of Science and Technology (KNUST), Ghana. My interests include artificial intelligence, machine learning, deep learning, optimization, and computer vision. I am particularly interested in applying mathematical concepts and computational methods to research problems.
 
 ## Projects
 
-### 1. Cocoa Price Analysis
-An analysis of historical Ghanaian cocoa producer prices and international cocoa market prices. The project explores price movements, year-on-year changes, long-term trends, and potential applications of time-series analysis to cocoa market research.
+### 1. Handwritten Digit Recognition
 
-**Tools:** Python, Pandas, NumPy, data visualization
+An artificial neural network (ANN) developed to classify handwritten digits from the MNIST dataset. This project explores neural network architecture, model training, and classification performance as part of my undergraduate research.
 
-### 2. Multilingual Emotion Detection
-An experimental natural language processing project investigating multi-label emotion classification across languages. The project compares dense XLM-R representations with a sparse-coding approach to explore their effects on emotion prediction.
+**Technologies:** Python, TensorFlow/Keras, NumPy, Matplotlib
 
-**Tools:** Python, XLM-R, Transformers, scikit-learn
+### 2. Cocoa Price Analysis
 
-### 3. Handwritten Digit Recognition
-A deep learning project that uses an artificial neural network to classify handwritten digits from the MNIST dataset. The work explores neural network architecture, model training, and classification performance.
+An analysis of historical Ghanaian cocoa producer prices and international cocoa market prices. The project examines price movements, year-on-year changes, long-term trends, and the application of time-series analysis to cocoa market research.
 
-**Tools:** Python, TensorFlow/Keras, NumPy, Matplotlib
+**Technologies:** Python, Pandas, NumPy, Data Visualization
 
-### 4. Phishing Email Detection
+### 3. Phishing Email Detection
+
 A machine learning project focused on classifying emails as potentially legitimate or phishing-related using email data and text-based features.
 
-**Tools:** Python, Pandas, scikit-learn, natural language processing
+**Technologies:** Python, Pandas, scikit-learn, Natural Language Processing
 
-## Technologies and Tools
+## Technical Skills and Tools
 
-- Python
-- TensorFlow/Keras
-- scikit-learn
-- Pandas and NumPy
-- Transformers
-- Jupyter Notebook and Google Colab
-- Git and GitHub
+- **Programming:** Python
+- **Machine Learning:** Supervised Learning, Classification, Predictive Modeling
+- **Deep Learning:** Artificial Neural Networks, TensorFlow/Keras
+- **Data Analysis:** Pandas, NumPy, Data Cleaning and Visualization
+- **Development Environments:** Jupyter Notebook, Google Colab
+- **Version Control:** Git and GitHub
+
+## Research Interests
+
+- Machine Learning and Deep Learning
+- Mathematical Optimization
+- Computer Vision
+- Representation Learning
+- Computational Mathematics
 
 ## About This Repository
 
-This repository documents my practical work, experimentation, and continued learning in machine learning and artificial intelligence. Implementations and results may be updated as the projects develop.
+This repository documents my practical implementations, experiments, and ongoing development in machine learning and artificial intelligence. It reflects my commitment to strengthening my computational skills and developing research experience at the intersection of mathematics and AI.
 
 ## Contact
 
-Feel free to explore the projects and share constructive feedback.
+I welcome constructive feedback, research discussions, and opportunities for academic collaboration.
