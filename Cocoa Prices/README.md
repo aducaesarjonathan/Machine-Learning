@@ -125,13 +125,13 @@ These producer-price corrections are separate from the ICCO international price 
 
 ## Technologies Used
 
-- **Python** — Core programming language
-- **Pandas** — Data loading, cleaning, and manipulation
-- **NumPy** — Numerical computations and harmonic terms
-- **Statsmodels** — Ordinary least squares regression
-- **SciPy** — Statistical F-distribution calculations
-- **Matplotlib** — Data visualization
-- **OpenPyXL** — Excel output support through Pandas
+- **Python** - Core programming language
+- **Pandas** - Data loading, cleaning, and manipulation
+- **NumPy** - Numerical computations and harmonic terms
+- **Statsmodels** - Ordinary least squares regression
+- **SciPy** - Statistical F-distribution calculations
+- **Matplotlib** - Data visualization
+- **OpenPyXL** - Excel output support through Pandas
 
 ## Project Structure
 
