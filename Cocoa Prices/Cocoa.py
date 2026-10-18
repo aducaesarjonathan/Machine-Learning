@@ -1,39 +1,12 @@
-"""
-Harmonic Time-Series Regression: Testing the 10-Year Cocoa Price Cycle Hypothesis
-COCOBOD Research Department
-
-Data: producer_prices.xlsx (Historical Cocoa Producer Price and World Market
-      Price, 1969/70 to 2021/22 crop years)
-
-This script:
-  1. Loads and cleans the raw crop-year data
-  2. Builds the harmonic regression model to test a specific cycle length (T)
-  3. Runs a joint F-test on the sine/cosine terms -> answers "is a T-year
-     cycle statistically real?"
-  4. Scans many candidate cycle lengths to see which (if any) fits best
-  5. Plots the result
-
-Install once if needed:
-  pip install pandas openpyxl statsmodels matplotlib numpy --break-system-packages
-"""
-
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 from scipy import stats as st
 import matplotlib
 import matplotlib.pyplot as plt
-# Note: no matplotlib.use("Agg") here -- that forces file-only saving with no
-# pop-up window. Leaving the backend as default lets plt.show() below open an
-# actual window when you run this on your own machine.
-
 import os
 
-# ---------------------------------------------------------------------------
-# STEP 1: LOAD AND CLEAN THE DATA
-# ---------------------------------------------------------------------------
-# Put producer_prices.xlsx in the SAME FOLDER as this script, or change the
-# path below to point wherever you saved it (e.g. "C:/Users/you/Documents/producer_prices.xlsx")
+# LOAD AND CLEAN THE DATA
 FILE_PATH = r"D:\VS code\Cocoa Prices\producer prices.xlsx"
 
 
@@ -54,9 +27,7 @@ raw = pd.read_excel(
 raw = raw.dropna(subset=["crop_year"]).reset_index(drop=True)
 
 
-# ============================================================
-# 2. CLEAN THE CROP YEAR
-# ============================================================
+# CLEAN THE CROP YEAR
 
 def clean_year(x):
     return str(x).lstrip("*").strip()
@@ -65,9 +36,8 @@ def clean_year(x):
 raw["crop_year"] = raw["crop_year"].apply(clean_year)
 
 
-# ============================================================
-# 3. CLEAN YoY PERCENTAGE
-# ============================================================
+
+# CLEAN YoY PERCENTAGE
 
 raw["yoy_pct"] = pd.to_numeric(
     raw["yoy_pct"],
@@ -78,9 +48,7 @@ raw["yoy_pct"] = pd.to_numeric(
 df = raw.dropna(subset=["yoy_pct"]).copy()
 
 
-# ============================================================
-# 4. CREATE THE HORIZONTAL BAR CHART
-# ============================================================
+# CREATE THE HORIZONTAL BAR CHART
 
 fig, ax = plt.subplots(figsize=(12, 18), dpi=200)
 
@@ -90,9 +58,8 @@ bars = ax.barh(
 )
 
 
-# ============================================================
-# 5. ADD PERCENTAGE LABELS NEXT TO EACH BAR
-# ============================================================
+
+# ADD PERCENTAGE LABELS NEXT TO EACH BAR
 
 for bar, value in zip(bars, df["yoy_pct"]):
 
@@ -121,9 +88,9 @@ for bar, value in zip(bars, df["yoy_pct"]):
         )
 
 
-# ============================================================
-# 6. ADD ZERO LINE
-# ============================================================
+
+# ADD ZERO LINE
+
 
 ax.axvline(
     x=0,
@@ -131,9 +98,8 @@ ax.axvline(
 )
 
 
-# ============================================================
-# 7. TITLES AND LABELS
-# ============================================================
+`
+# TITLES AND LABELS
 
 ax.set_title(
     "Year-on-Year Changes in ICCO Cocoa Prices",
@@ -153,9 +119,9 @@ ax.set_ylabel(
 )
 
 
-# ============================================================
-# 8. GRID
-# ============================================================
+
+# GRID
+
 
 ax.grid(
     axis="x",
@@ -166,17 +132,15 @@ ax.grid(
 ax.set_axisbelow(True)
 
 
-# ============================================================
-# 9. IMPROVE SPACING
-# ============================================================
+
+# IMPROVE SPACING
+
 
 plt.tight_layout()
 
 
-# ============================================================
-# 10. SAVE FIGURE
-# ============================================================
 
+# SAVE FIGURE
 output_path = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     "cocoa_yoy_changes.png"
@@ -191,9 +155,8 @@ plt.savefig(
 print(f"Chart saved to:\n{output_path}")
 
 
-# ============================================================
-# 11. DISPLAY
-# ============================================================
+# DISPLAY
+
 
 plt.show()
 
@@ -225,7 +188,7 @@ def parse_producer_price(value, start_year: int) -> float:
     """
     Handles two data-quality issues found in the raw file:
       (a) Two rows (2007/08, 2009/10) store TWO values as a string like
-          '950.00/1,200.00' -- an in-season price revision. We average them.
+          '950.00/1,200.00' an in-season price revision. We average them.
       (b) Ghana redenominated its currency in July 2007 (10,000 old Cedis =
           1 new Ghana Cedi). Every value before 2007/08 must be divided by
           10,000 so the whole series sits on one consistent currency basis.
@@ -252,17 +215,16 @@ df = raw[["year", "producer_price_ghs", "icco_price_usd"]].sort_values("year").r
 n = len(df)
 print(f"Loaded {n} crop-years: {df['year'].min()} to {df['year'].max()}\n")
 
-# ---------------------------------------------------------------------------
-# STEP 2: BUILD THE HARMONIC REGRESSION MODEL FOR A SPECIFIC CYCLE LENGTH
-# ---------------------------------------------------------------------------
+
+# BUILD THE HARMONIC REGRESSION MODEL FOR A SPECIFIC CYCLE LENGTH
 # Model:  Price = b0 + b1*t + b2*sin(2*pi*t/T) + b3*cos(2*pi*t/T)
-#   - t is time, CENTERED on its mean (keeps the regression numerically stable)
+#   - t is time, CENTERED on its mean (keeps regression numerically stable)
 #   - b1 captures the long-run linear trend
 #   - b2, b3 together capture a wave of period T, at ANY phase/starting point,
 #     because b2*sin(x) + b3*cos(x) = R*sin(x + phi) for some amplitude R and
-#     phase phi -- so we don't need to know in advance where the cycle "starts"
+#     phase phi - so we don't need to know in advance where the cycle "starts"
 
-y = df["icco_price_usd"].values  # world market price -- the right series for
+y = df["icco_price_usd"].values  # world market price the right series for
                                    # testing a GLOBAL price cycle (unlike the
                                    # Cedi producer price, it isn't distorted
                                    # by 50+ years of local currency inflation)
@@ -287,7 +249,7 @@ def joint_cycle_test(model_restricted, model_full, n):
     """
     Joint F-test: is the CYCLE (both sine and cosine terms together)
     statistically different from zero, beyond the linear trend alone?
-    This is the correct test -- checking b2 and b3's individual p-values
+    This is the correct test checking b2 and b3's individual p-values
     separately is not, because the true cycle's phase is unknown and could
     load onto either term.
     """
@@ -301,9 +263,8 @@ def joint_cycle_test(model_restricted, model_full, n):
     return F, p_value, df_denom
 
 
-# ---------------------------------------------------------------------------
-# STEP 3: RUN THE DIRECT TEST FOR YOUR SPECIFIC HYPOTHESIS -- T = 10 YEARS
-# ---------------------------------------------------------------------------
+
+# RUN THE DIRECT TEST FOR YOUR SPECIFIC HYPOTHESIS, T = 10 YEARS
 T_HYPOTHESIS = 10
 model_r, model_f = fit_harmonic_model(t, y, T_HYPOTHESIS)
 F_stat, p_value, df_denom = joint_cycle_test(model_r, model_f, n)
@@ -319,9 +280,7 @@ if p_value < 0.05:
 else:
     print(f"=> NOT significant at 5%: no evidence of a real {T_HYPOTHESIS}-year cycle.")
 
-# ---------------------------------------------------------------------------
-# STEP 4: SCAN OTHER CANDIDATE CYCLE LENGTHS (EXPLORATORY)
-# ---------------------------------------------------------------------------
+# SCAN OTHER CANDIDATE CYCLE LENGTHS (EXPLORATORY)
 print("\n" + "=" * 70)
 print("PERIOD SCAN: testing every candidate cycle length from 4 to 25 years")
 print("=" * 70)
@@ -344,9 +303,9 @@ print("IMPORTANT: scanning many periods and reporting the best one is a "
       "the Bonferroni threshold above, AND the sample contains several full "
       "cycles of that length (n_years / T should be at least ~3-5).")
 
-# ---------------------------------------------------------------------------
-# STEP 5: PLOT THE ACTUAL DATA AGAINST THE T=10 FITTED CURVE
-# ---------------------------------------------------------------------------
+ 
+# PLOT THE ACTUAL DATA AGAINST THE T=10 FITTED CURVE
+
 fitted_10yr = model_f.predict(sm.add_constant(np.column_stack([
     t, np.sin(2*np.pi*t/T_HYPOTHESIS), np.cos(2*np.pi*t/T_HYPOTHESIS)
 ])))
@@ -371,7 +330,6 @@ plt.show()  # opens an interactive window -- close it to let the script finish
 
 """
 Historical Bullish and Bearish Cocoa Market Periods
-COCOBOD Research Department
 
 Method:
 20% peak-to-trough / trough-to-peak rule
@@ -392,9 +350,9 @@ import matplotlib.pyplot as plt
 import os
 
 
-# ============================================================
-# STEP 1: LOAD THE DATA
-# ============================================================
+
+# LOAD THE DATA
+
 
 FILE_PATH = r"D:\VS code\Cocoa Prices\producer prices.xlsx"
 
@@ -420,9 +378,8 @@ raw = pd.read_excel(
 raw = raw.dropna(subset=["crop_year"]).reset_index(drop=True)
 
 
-# ============================================================
-# STEP 2: CLEAN THE YEAR VARIABLE
-# ============================================================
+
+# CLEAN THE YEAR VARIABLE
 
 def parse_start_year(crop_year):
     """
@@ -440,9 +397,8 @@ def parse_start_year(crop_year):
 raw["year"] = raw["crop_year"].apply(parse_start_year)
 
 
-# ============================================================
-# STEP 3: CLEAN ICCO PRICE
-# ============================================================
+
+# CLEAN ICCO PRICE
 
 raw["icco_price_usd"] = pd.to_numeric(
     raw["icco_price_usd"],
@@ -460,9 +416,7 @@ print(
 )
 
 
-# ============================================================
-# STEP 4: 20% BULL/BEAR ALGORITHM
-# ============================================================
+# 20% BULL/BEAR ALGORITHM
 
 prices = df["icco_price_usd"].values
 years = df["year"].values
@@ -489,10 +443,9 @@ for i in range(1, len(prices)):
     price = prices[i]
     year = years[i]
 
-    # --------------------------------------------------------
+    
     # NO MARKET DIRECTION YET
-    # --------------------------------------------------------
-
+    
     if direction is None:
 
         # New high
@@ -532,9 +485,9 @@ for i in range(1, len(prices)):
             trough_year = year
 
 
-    # --------------------------------------------------------
+    
     # BULLISH PHASE
-    # --------------------------------------------------------
+
 
     elif direction == "Bullish":
 
@@ -575,9 +528,8 @@ for i in range(1, len(prices)):
             trough_year = year
 
 
-    # --------------------------------------------------------
+    
     # BEARISH PHASE
-    # --------------------------------------------------------
 
     elif direction == "Bearish":
 
@@ -618,9 +570,8 @@ for i in range(1, len(prices)):
             peak_year = year
 
 
-# ============================================================
-# STEP 5: HANDLE THE FINAL OPEN PHASE
-# ============================================================
+# HANDLE THE FINAL OPEN PHASE
+
 
 # The final phase may not have experienced a 20% reversal
 # before the dataset ends. We still report it.
@@ -664,9 +615,7 @@ elif direction == "Bearish":
     })
 
 
-# ============================================================
-# STEP 6: CREATE RESULTS TABLE
-# ============================================================
+# CREATE RESULTS TABLE
 
 results = pd.DataFrame(phases)
 
@@ -688,9 +637,7 @@ print(
 )
 
 
-# ============================================================
-# STEP 7: SUMMARY STATISTICS
-# ============================================================
+# SUMMARY STATISTICS
 
 confirmed = results[
     ~results["Direction"].str.contains("Open")
@@ -752,9 +699,7 @@ if len(bearish) > 0:
     )
 
 
-# ============================================================
-# STEP 8: SAVE THE RESULTS
-# ============================================================
+# SAVE THE RESULTS
 
 output_path = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
@@ -770,10 +715,7 @@ print(
     f"\nResults saved to:\n{output_path}"
 )
 
-
-# ============================================================
-# STEP 9: PLOT THE PHASES
-# ============================================================
+# PLOT THE PHASES
 
 plt.figure(figsize=(12, 6), dpi=200)
 
